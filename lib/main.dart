@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_app/prefs/preferences.dart';
-import 'package:my_app/bus/bus_helper.dart';
+import 'package:my_app/bus/events.dart';
 import 'widgets/form_card.dart';
 import 'pages/dashboard.dart';
 import 'widgets/button_tap.dart';
@@ -32,6 +32,13 @@ class _MyAppState extends State<Login> {
   void initState() {
     super.initState();
     this.getDeviceStatus();
+    this.initBus();
+  }
+
+  initBus(){
+    eventBus.on<ResetVersionEvent>().listen((event){
+      setStatus('');
+    });
   }
 
   Widget horizontalLine() => Padding(
@@ -119,13 +126,14 @@ class _MyAppState extends State<Login> {
     setState(() {
       version = v;
     });
+    eventBus.fire(UpdateVersionEvent(v));
   }
 
   void setStatus(v) async {
     setState(() {
       status = v;
-      version = 'Version 1.0';
     });
+    setVersion('Version 1.0');
     await Prefs.setDeviceStatus(v);
   }
 
@@ -154,18 +162,6 @@ class _MyAppState extends State<Login> {
                       height: ScreenUtil.getInstance().setHeight(60),
                     ),
                     FormCard(),
-                    GestureDetector(
-                      onLongPress: () {
-                        setStatus('');
-                      },
-                      child: Text(
-                        version,
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
                   ],
                 ),
               ),

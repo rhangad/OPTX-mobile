@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_app/pages/dashboard.dart';
+import 'package:my_app/bus/events.dart';
 
 class FormCard extends StatefulWidget {
   @override
@@ -9,9 +10,27 @@ class FormCard extends StatefulWidget {
 
 class FormCardState extends State<FormCard> {
   bool rememberMe = false;
+  String _version = 'Version 1.0';
   
   FocusNode passwordFocusNode = new FocusNode();
 
+  @override
+  void initState() {
+    super.initState();
+    this.initBus();
+  }
+
+  void resetVersion() {
+    eventBus.fire(ResetVersionEvent());
+  }
+
+  initBus(){
+    eventBus.on<UpdateVersionEvent>().listen((event){
+      setState(() {
+        this._version = event.text;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -130,6 +149,15 @@ class FormCardState extends State<FormCard> {
                 },
               ),
             ),
+            
+            GestureDetector(
+              onLongPress: (){resetVersion();},
+              child: Container(
+                padding: EdgeInsets.all(8),
+                width: double.infinity,
+                child: Text(_version,textAlign: TextAlign.center,),
+              ),
+            )
           ],
         ),
       ),
