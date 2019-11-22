@@ -9,14 +9,14 @@ class FormCard extends StatefulWidget {
 
 class FormCardState extends State<FormCard> {
   bool rememberMe = false;
-
+  
   FocusNode passwordFocusNode = new FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(725),
+      height: ScreenUtil.getInstance().setHeight(1000),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.0),
@@ -129,7 +129,7 @@ class FormCardState extends State<FormCard> {
                       MaterialPageRoute(builder: (context) => Dashboard()));
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
