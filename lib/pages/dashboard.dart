@@ -8,7 +8,6 @@ import 'package:my_app/utils/device_info.dart';
 import 'package:my_app/widgets/collapsible.dart';
 
 class Dashboard extends StatefulWidget {
-
   static final _deviceInfo = DeviceInfo();
 
   // static final _userProvider = UserProvider();
@@ -18,7 +17,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
   Map<String, dynamic> deviceData;
 
   DeviceInfo deviceInfo;
@@ -27,12 +25,12 @@ class _DashboardState extends State<Dashboard> {
 
   // User user = User();
 
-  _DashboardState({ this.deviceInfo });
+  _DashboardState({this.deviceInfo});
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    
+
     this.getDeviceInfo();
 
     // this.createUser();
@@ -48,32 +46,6 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  // void createUser() async {
-  //   await userProvider.open();
-
-  //   var user = User();
-
-  //   user.firstname = "Juan";
-  //   user.lastname = "Dela Cruz";
-
-  //   await userProvider.insert(user);
-  //   await userProvider.close();
-  // }
-
-  // void getUser() async {
-  //   await userProvider.open();
-
-  //   var user = await userProvider.getUser(1);
-
-  //   debugPrint(user.firstname);
-
-  //   setState(() {
-  //     this.user = user;
-  //   });
-
-  //   await userProvider.close();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,23 +56,20 @@ class _DashboardState extends State<Dashboard> {
       body: Center(
           child: Column(
         children: <Widget>[
-          Text("Device Information", style: TextStyle(fontSize: 18),),
+          Text(
+            "API type",
+            style: TextStyle(fontSize: 18),
+          ),
+          SizedBox(height: 5,),
+          Text("DEV | QA | PRODUCTION"),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Device Information",
+            style: TextStyle(fontSize: 18),
+          ),
           deviceInfoList()
-          // Collapsible(
-          //   title: "General",
-          //   children: <Widget>[
-          //     listItem("Account Number:", "11781"),
-          //     listItem("Name:", "Juan Dela Cruz"),
-          //     listItem("Birthday:", "December 31, 1990"),
-          //     listItem("Last Play Date:", "January 1, 1991"),
-          //     listItem("Host:", "None"),
-          //     listItem("Last Contact:", "None"),
-          //     Text(deviceData.toString()),
-          //     SizedBox(
-          //       height: 20,
-          //     )
-          //   ],
-          // ),
         ],
       )),
     );
@@ -120,13 +89,15 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget deviceInfoList() {
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       return Column(
         children: <Widget>[
           listItem("id:", deviceData["id"]),
           listItem("androidId:", deviceData["androidId"]),
-          listItem("isPhysicalDevice:", deviceData["isPhysicalDevice"] ? "yes" : "no"),
-          listItem("version.securityPatch:", deviceData["version.securityPatch"]),
+          listItem("isPhysicalDevice:",
+              deviceData["isPhysicalDevice"] ? "yes" : "no"),
+          listItem(
+              "version.securityPatch:", deviceData["version.securityPatch"]),
           listItem("version.sdkInt:", deviceData["version.sdkInt"].toString()),
           listItem("version.release:", deviceData["version.release"]),
           listItem("version.incremental:", deviceData["version.incremental"]),
@@ -144,7 +115,7 @@ class _DashboardState extends State<Dashboard> {
           listItem("type:", deviceData["type"]),
         ],
       );
-    } else if(Platform.isIOS) {
+    } else if (Platform.isIOS) {
       return Column(
         children: <Widget>[
           listItem("name:", deviceData["name"]),
@@ -153,7 +124,7 @@ class _DashboardState extends State<Dashboard> {
           listItem("model:", deviceData["model"]),
           listItem("localizedModel:", deviceData["localizedModel"]),
           listItem("identifierForVendor:", deviceData["identifierForVendor"]),
-          listItem("isPhysicalDevice:", deviceData["isPhysicalDevice"]),
+          listItem("isPhysicalDevice:", deviceData["isPhysicalDevice"] ? "yes" : "no"),
           listItem("utsname.sysname:", deviceData["utsname.sysname"]),
           listItem("utsname.nodename:", deviceData["utsname.nodename"]),
           listItem("utsname.release:", deviceData["utsname.release"]),
@@ -164,5 +135,4 @@ class _DashboardState extends State<Dashboard> {
     }
     return Text("Unsupported Device");
   }
-
 }
