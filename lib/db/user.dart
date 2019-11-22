@@ -61,6 +61,15 @@ class UserProvider {
     return null;
   }
 
+  Future<List<User>> getUsers() async {
+    List<Map> maps = await db.query(tableUser,
+        columns: [columnId, columnLastname, columnFirstname]);
+    if (maps.length > 0) {
+      return maps.map((user) => User.fromMap(user)).toList();
+    }
+    return null;
+  }
+
   Future<int> delete(int id) async {
     return await db.delete(tableUser, where: '$columnId = ?', whereArgs: [id]);
   }
