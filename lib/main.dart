@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_app/prefs/preferences.dart';
+import 'package:my_app/bus/bus_helper.dart';
 import 'widgets/form_card.dart';
 import 'pages/dashboard.dart';
 import 'widgets/button_tap.dart';
@@ -20,10 +22,17 @@ class Login extends StatefulWidget {
 class _MyAppState extends State<Login> {
   static final _qaCombo = "4123";
   static final _devCombo = "1234";
-  String status = 'prod';
+  String version = "Version 1.0";
+  String status = '';
   Timer _timer;
   int _start;
   String combo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    this.getDeviceStatus();
+  }
 
   Widget horizontalLine() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -33,6 +42,16 @@ class _MyAppState extends State<Login> {
           color: Colors.black26.withOpacity(.2),
         ),
       );
+
+  void getDeviceStatus() async{
+    await Prefs.deviceStatus.then((value) {
+      setState(() {
+        print('>>>>' + value);
+        status = value;
+      });
+      versionText();
+    });
+  }
 
   void resetTimer(v) {
     setState(() {
@@ -44,25 +63,29 @@ class _MyAppState extends State<Login> {
     });
   }
 
-  void checkStatus() {
-    if (status == 'prod') {
+  void checkStatus() async{
+    if (status == '') {
       if (_qaCombo == combo) {
         setState(() {
           status = 'qa';
         });
         Toast.show("QA", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        await Prefs.setDeviceStatus('qa');
+        versionText();
       } else if (_devCombo == combo) {
         setState(() {
           status = 'dev';
         });
         Toast.show("Dev", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        await Prefs.setDeviceStatus('dev');
+        versionText();
       }
     }
   }
-  
-  void counter(){
+
+  void counter() {
     _timer = new Timer.periodic(
       Duration(seconds: 1),
       (Timer timer) => setState(
@@ -82,6 +105,25 @@ class _MyAppState extends State<Login> {
     resetTimer(v);
     checkStatus();
     counter();
+  }
+
+  void versionText(){
+    switch (status){
+      case 'qa':
+        setVersion(version + "-qa");
+        break;
+      case 'dev':
+        setVersion(version + "-dev");
+        break;
+      default:
+        break;
+    }
+  }
+
+  void setVersion(v){
+    setState(() {
+      version = v;
+    });
   }
 
   @override
@@ -108,7 +150,8 @@ class _MyAppState extends State<Login> {
                     SizedBox(
                       height: ScreenUtil.getInstance().setHeight(60),
                     ),
-                    FormCard(),
+                    Text(version),
+                    FormCard(version),
                   ],
                 ),
               ),
@@ -129,7 +172,7 @@ class _MyAppState extends State<Login> {
               ),
             ),
             ButtonTap(
-              (status == 'prod'),
+              (status == ''),
               MainAxisAlignment.start,
               CrossAxisAlignment.start,
               () {
@@ -137,7 +180,7 @@ class _MyAppState extends State<Login> {
               },
             ),
             ButtonTap(
-              (status == 'prod'),
+              (status == ''),
               MainAxisAlignment.start,
               CrossAxisAlignment.end,
               () {
@@ -145,7 +188,7 @@ class _MyAppState extends State<Login> {
               },
             ),
             ButtonTap(
-              (status == 'prod'),
+              (status == ''),
               MainAxisAlignment.end,
               CrossAxisAlignment.end,
               () {
@@ -153,7 +196,7 @@ class _MyAppState extends State<Login> {
               },
             ),
             ButtonTap(
-              (status == 'prod'),
+              (status == ''),
               MainAxisAlignment.end,
               CrossAxisAlignment.start,
               () {

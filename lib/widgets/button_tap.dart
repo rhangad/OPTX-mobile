@@ -26,8 +26,8 @@ class ButtonTap extends StatelessWidget {
         GestureDetector(
           onTap: callback,
           child: SizedBox(
-              height: ScreenUtil.getInstance().setHeight(100),
-              width: ScreenUtil.getInstance().setWidth(100),
+              height: ScreenUtil.getInstance().setHeight(150),
+              width: ScreenUtil.getInstance().setWidth(150),
               child: Container(
                 color: Colors.red,
               )),
