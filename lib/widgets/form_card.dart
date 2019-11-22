@@ -16,7 +16,7 @@ class FormCardState extends State<FormCard> {
   Widget build(BuildContext context) {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(725),
+      height: ScreenUtil.getInstance().setHeight(1000),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.0),
