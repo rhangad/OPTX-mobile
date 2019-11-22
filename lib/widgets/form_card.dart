@@ -3,20 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_app/pages/dashboard.dart';
 
 class FormCard extends StatefulWidget {
-  String version;
-  
-  FormCard(this.version);
-
   @override
-  FormCardState createState() => FormCardState(version);
+  FormCardState createState() => FormCardState();
 }
 
 class FormCardState extends State<FormCard> {
   bool rememberMe = false;
-  String version;
   
-  FormCardState(this.version);
-
   FocusNode passwordFocusNode = new FocusNode();
 
   @override
@@ -137,14 +130,6 @@ class FormCardState extends State<FormCard> {
                 },
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(8),
-              width: double.infinity,
-              child: Text(
-                version,
-                textAlign: TextAlign.center,
-              ),
-            )
           ],
         ),
       ),
