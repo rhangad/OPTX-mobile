@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_app/cells/tableview_cell.dart';
 import 'package:my_app/db/user.dart';
+import 'package:my_app/prefs/preferences.dart';
 import 'package:my_app/utils/device_info.dart';
 import 'package:my_app/widgets/collapsible.dart';
 
@@ -25,6 +26,8 @@ class _DashboardState extends State<Dashboard> {
 
   // User user = User();
 
+  String status = "prod";
+
   _DashboardState({this.deviceInfo});
 
   @override
@@ -32,6 +35,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     this.getDeviceInfo();
+
+    this.getDeviceStatus();
 
     // this.createUser();
 
@@ -61,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
             style: TextStyle(fontSize: 18),
           ),
           SizedBox(height: 5,),
-          Text("DEV | QA | PRODUCTION"),
+          Text(status),
           SizedBox(
             height: 20,
           ),
@@ -134,5 +139,15 @@ class _DashboardState extends State<Dashboard> {
       );
     }
     return Text("Unsupported Device");
+  }
+
+  void getDeviceStatus() async {
+    await Prefs.deviceStatus.then((value) {
+      setState(() {
+        if(value.isNotEmpty) {
+          status = value;
+        }
+      });
+    });
   }
 }
