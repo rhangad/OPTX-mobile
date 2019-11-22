@@ -8,7 +8,7 @@ final String columnLastname = 'lastname';
 class User {
   int id;
   String firstname;
-  bool lastname;
+  String lastname;
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -33,7 +33,8 @@ class User {
 class UserProvider {
   Database db;
 
-  Future open(String path) async {
+  Future open() async {
+    var path = "demo.db";
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
