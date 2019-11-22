@@ -43,7 +43,7 @@ class _MyAppState extends State<Login> {
         ),
       );
 
-  void getDeviceStatus() async{
+  void getDeviceStatus() async {
     await Prefs.deviceStatus.then((value) {
       setState(() {
         print('>>>>' + value);
@@ -63,23 +63,18 @@ class _MyAppState extends State<Login> {
     });
   }
 
-  void checkStatus() async{
+  void checkStatus() async {
     if (status == '') {
       if (_qaCombo == combo) {
-        setState(() {
-          status = 'qa';
-        });
+        setStatus('qa');
         Toast.show("QA", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-        await Prefs.setDeviceStatus('qa');
+
         versionText();
       } else if (_devCombo == combo) {
-        setState(() {
-          status = 'dev';
-        });
+        setStatus('dev');
         Toast.show("Dev", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-        await Prefs.setDeviceStatus('dev');
         versionText();
       }
     }
@@ -107,8 +102,8 @@ class _MyAppState extends State<Login> {
     counter();
   }
 
-  void versionText(){
-    switch (status){
+  void versionText() {
+    switch (status) {
       case 'qa':
         setVersion(version + "-qa");
         break;
@@ -120,10 +115,18 @@ class _MyAppState extends State<Login> {
     }
   }
 
-  void setVersion(v){
+  void setVersion(v) async {
     setState(() {
       version = v;
     });
+  }
+
+  void setStatus(v) async {
+    setState(() {
+      status = v;
+      version = 'Version 1.0';
+    });
+    await Prefs.setDeviceStatus(v);
   }
 
   @override
@@ -150,27 +153,38 @@ class _MyAppState extends State<Login> {
                     SizedBox(
                       height: ScreenUtil.getInstance().setHeight(60),
                     ),
-                    Text(version),
-                    FormCard(version),
+                    FormCard(),
+                    GestureDetector(
+                      onLongPress: () {
+                        setStatus('');
+                      },
+                      child: Text(
+                        version,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Center(
-                    child: new Text(
-                      combo,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   width: double.infinity,
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: <Widget>[
+            //       Center(
+            //         child: new Text(
+            //           combo,
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             ButtonTap(
               (status == ''),
               MainAxisAlignment.start,

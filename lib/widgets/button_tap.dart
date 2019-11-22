@@ -29,7 +29,7 @@ class ButtonTap extends StatelessWidget {
               height: ScreenUtil.getInstance().setHeight(150),
               width: ScreenUtil.getInstance().setWidth(150),
               child: Container(
-                color: Colors.red,
+                color: Colors.transparent,
               )),
         ),
       ],
