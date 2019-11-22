@@ -81,10 +81,4 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  List<Widget> itemFromDeviceInfo(Map<String, dynamic> deviceData) {
-    return deviceData
-      .map((key, value) => {
-        return listItem(key, value)
-      })
-  } 
 }
