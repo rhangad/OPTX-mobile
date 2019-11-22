@@ -3,12 +3,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_app/pages/dashboard.dart';
 
 class FormCard extends StatefulWidget {
+  String version;
+  
+  FormCard(this.version);
+
   @override
-  FormCardState createState() => FormCardState();
+  FormCardState createState() => FormCardState(version);
 }
 
 class FormCardState extends State<FormCard> {
   bool rememberMe = false;
+  String version;
+  
+  FormCardState(this.version);
 
   FocusNode passwordFocusNode = new FocusNode();
 
@@ -16,7 +23,7 @@ class FormCardState extends State<FormCard> {
   Widget build(BuildContext context) {
     return new Container(
       width: double.infinity,
-      height: ScreenUtil.getInstance().setHeight(725),
+      height: ScreenUtil.getInstance().setHeight(1000),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.0),
@@ -128,6 +135,14 @@ class FormCardState extends State<FormCard> {
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => Dashboard()));
                 },
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(8),
+              width: double.infinity,
+              child: Text(
+                version,
+                textAlign: TextAlign.center,
               ),
             )
           ],

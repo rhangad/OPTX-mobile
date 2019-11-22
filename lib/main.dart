@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_app/prefs/preferences.dart';
+import 'package:my_app/bus/bus_helper.dart';
 import 'widgets/form_card.dart';
 import 'pages/dashboard.dart';
+import 'widgets/button_tap.dart';
+import 'dart:async';
+import 'package:toast/toast.dart';
 
 void main() => runApp(MaterialApp(
       home: Login(),
@@ -15,6 +20,20 @@ class Login extends StatefulWidget {
 }
 
 class _MyAppState extends State<Login> {
+  static final _qaCombo = "4123";
+  static final _devCombo = "1234";
+  String version = "Version 1.0";
+  String status = '';
+  Timer _timer;
+  int _start;
+  String combo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    this.getDeviceStatus();
+  }
+
   Widget horizontalLine() => Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
@@ -23,6 +42,89 @@ class _MyAppState extends State<Login> {
           color: Colors.black26.withOpacity(.2),
         ),
       );
+
+  void getDeviceStatus() async{
+    await Prefs.deviceStatus.then((value) {
+      setState(() {
+        print('>>>>' + value);
+        status = value;
+      });
+      versionText();
+    });
+  }
+
+  void resetTimer(v) {
+    setState(() {
+      _start = 4;
+      combo += v;
+      if (_timer != null) {
+        _timer.cancel();
+      }
+    });
+  }
+
+  void checkStatus() async{
+    if (status == '') {
+      if (_qaCombo == combo) {
+        setState(() {
+          status = 'qa';
+        });
+        Toast.show("QA", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        await Prefs.setDeviceStatus('qa');
+        versionText();
+      } else if (_devCombo == combo) {
+        setState(() {
+          status = 'dev';
+        });
+        Toast.show("Dev", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        await Prefs.setDeviceStatus('dev');
+        versionText();
+      }
+    }
+  }
+
+  void counter() {
+    _timer = new Timer.periodic(
+      Duration(seconds: 1),
+      (Timer timer) => setState(
+        () {
+          if (_start < 1) {
+            combo = '';
+            timer.cancel();
+          } else {
+            _start = _start - 1;
+          }
+        },
+      ),
+    );
+  }
+
+  void startTimer(v) {
+    resetTimer(v);
+    checkStatus();
+    counter();
+  }
+
+  void versionText(){
+    switch (status){
+      case 'qa':
+        setVersion(version + "-qa");
+        break;
+      case 'dev':
+        setVersion(version + "-dev");
+        break;
+      default:
+        break;
+    }
+  }
+
+  void setVersion(v){
+    setState(() {
+      version = v;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,26 +135,76 @@ class _MyAppState extends State<Login> {
     return new Scaffold(
       backgroundColor: Color(0xFFF2A03A),
       resizeToAvoidBottomPadding: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
+      body: SafeArea(
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 0.0),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(120),
+                    ),
+                    SizedBox(
+                      height: ScreenUtil.getInstance().setHeight(60),
+                    ),
+                    Text(version),
+                    FormCard(version),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(120),
+                  Center(
+                    child: new Text(
+                      combo,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(60),
-                  ),
-                  FormCard(),
                 ],
               ),
             ),
-          )
-        ],
+            ButtonTap(
+              (status == ''),
+              MainAxisAlignment.start,
+              CrossAxisAlignment.start,
+              () {
+                startTimer('1');
+              },
+            ),
+            ButtonTap(
+              (status == ''),
+              MainAxisAlignment.start,
+              CrossAxisAlignment.end,
+              () {
+                startTimer('2');
+              },
+            ),
+            ButtonTap(
+              (status == ''),
+              MainAxisAlignment.end,
+              CrossAxisAlignment.end,
+              () {
+                startTimer('3');
+              },
+            ),
+            ButtonTap(
+              (status == ''),
+              MainAxisAlignment.end,
+              CrossAxisAlignment.start,
+              () {
+                startTimer('4');
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
